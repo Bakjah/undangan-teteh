@@ -40,7 +40,7 @@ h1, h2, h3, h4 {
 }
 
 /* ========================================
-   ENHANCED AURORA BACKGROUND
+   ENHANCED AURORA BACKGROUND - OPTIMIZED
 ======================================== */
 .aurora-bg {
   position: fixed;
@@ -53,6 +53,7 @@ h1, h2, h3, h4 {
   background: linear-gradient(135deg, #FFF8F0 0%, #FDF0F2 50%, #FFF8EC 100%);
 }
 
+/* Simplified aurora for performance */
 .aurora-bg::before {
   content: '';
   position: absolute;
@@ -64,6 +65,9 @@ h1, h2, h3, h4 {
     radial-gradient(ellipse at 20% 50%, rgba(247, 231, 206, 0.9) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 30%, rgba(183, 110, 121, 0.5) 0%, transparent 50%);
   animation: auroraMain 25s ease-in-out infinite;
+  will-change: transform;
+  /* Contain for performance */
+  contain: strict;
 }
 
 .aurora-bg::after {
@@ -78,6 +82,7 @@ h1, h2, h3, h4 {
     radial-gradient(ellipse at 30% 20%, rgba(255, 240, 245, 0.6) 0%, transparent 50%);
   animation: auroraMain2 20s ease-in-out infinite;
   animation-delay: -5s;
+  will-change: transform;
 }
 
 .aurora-layer {
@@ -86,29 +91,15 @@ h1, h2, h3, h4 {
   left: -50%;
   width: 200%;
   height: 200%;
-}
-
-.aurora-layer:nth-child(1) {
-  background: radial-gradient(ellipse at 30% 70%, rgba(247, 231, 206, 0.7) 0%, transparent 50%);
-  animation: auroraLayer1 18s ease-in-out infinite;
-}
-
-.aurora-layer:nth-child(2) {
-  background: radial-gradient(ellipse at 70% 80%, rgba(183, 110, 121, 0.5) 0%, transparent 50%);
-  animation: auroraLayer2 22s ease-in-out infinite;
-}
-
-.aurora-layer:nth-child(3) {
-  background: radial-gradient(ellipse at 50% 50%, rgba(255, 253, 240, 0.8) 0%, transparent 60%);
-  animation: auroraLayer3 15s ease-in-out infinite;
+  will-change: transform;
 }
 
 .aurora-light {
   position: absolute;
   border-radius: 50%;
-  filter: blur(60px);
-  animation: lightFloat 12s ease-in-out infinite;
+  will-change: transform, opacity;
   opacity: 0.7;
+  transform: translateZ(0); /* Hardware acceleration */
 }
 
 .aurora-light-1 {
@@ -119,6 +110,7 @@ h1, h2, h3, h4 {
   left: 5%;
   animation-delay: 0s;
   animation-duration: 12s;
+  filter: blur(60px);
 }
 
 .aurora-light-2 {
@@ -129,6 +121,7 @@ h1, h2, h3, h4 {
   right: 10%;
   animation-delay: -3s;
   animation-duration: 15s;
+  filter: blur(60px);
 }
 
 .aurora-light-3 {
@@ -139,6 +132,7 @@ h1, h2, h3, h4 {
   left: 20%;
   animation-delay: -6s;
   animation-duration: 18s;
+  filter: blur(60px);
 }
 
 .aurora-light-4 {
@@ -149,6 +143,7 @@ h1, h2, h3, h4 {
   right: 15%;
   animation-delay: -9s;
   animation-duration: 14s;
+  filter: blur(60px);
 }
 
 @keyframes auroraMain {
@@ -188,7 +183,7 @@ h1, h2, h3, h4 {
 }
 
 /* ========================================
-   FLOATING HEARTS - Fade In/Out Random Position
+   FLOATING HEARTS - PERFORMANCE OPTIMIZED
 ======================================== */
 .floating-hearts-container {
   position: fixed;
@@ -199,18 +194,28 @@ h1, h2, h3, h4 {
   pointer-events: none;
   z-index: 99995;
   overflow: hidden;
+  /* Performance optimization */
+  contain: strict;
 }
 
 .floating-heart {
   position: absolute;
   bottom: -50px;
-  animation: heartFloatUp ease-out forwards;
+  animation: heartFadeInOut ease-out forwards;
   opacity: 0;
-  animation-name: heartFadeInOut;
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 
 .floating-heart i {
   filter: drop-shadow(0 0 5px currentColor);
+}
+
+/* Reduce animation complexity for mobile */
+@media (max-width: 768px) {
+  .floating-heart {
+    animation-name: heartFadeInOutSimple;
+  }
 }
 
 @keyframes heartFadeInOut {
@@ -222,17 +227,9 @@ h1, h2, h3, h4 {
     opacity: 1;
     transform: translateY(-10vh) translateX(calc(var(--drift) * 0.1)) rotate(calc(var(--rotation) * 0.1)) scale(1);
   }
-  30% {
-    opacity: 1;
-    transform: translateY(-30vh) translateX(calc(var(--drift) * 0.3)) rotate(calc(var(--rotation) * 0.3)) scale(1.1);
-  }
   50% {
     opacity: 1;
     transform: translateY(-50vh) translateX(calc(var(--drift) * 0.5)) rotate(calc(var(--rotation) * 0.5)) scale(1);
-  }
-  70% {
-    opacity: 0.8;
-    transform: translateY(-70vh) translateX(calc(var(--drift) * 0.7)) rotate(calc(var(--rotation) * 0.7)) scale(0.9);
   }
   90% {
     opacity: 0.3;
@@ -244,8 +241,28 @@ h1, h2, h3, h4 {
   }
 }
 
+/* Simplified animation for mobile */
+@keyframes heartFadeInOutSimple {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-30vh) scale(1);
+  }
+  80% {
+    opacity: 0.5;
+    transform: translateY(-80vh) scale(0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-110vh) scale(0.5);
+  }
+}
+
 /* ========================================
-   SAKURA PETALS
+   SAKURA PETALS - PERFORMANCE OPTIMIZED
 ======================================== */
 .sakura-container {
   position: fixed;
@@ -256,6 +273,7 @@ h1, h2, h3, h4 {
   pointer-events: none;
   z-index: 9998;
   overflow: hidden;
+  contain: strict;
 }
 
 .sakura-petal {
@@ -263,13 +281,21 @@ h1, h2, h3, h4 {
   top: -50px;
   animation: sakuraFall linear forwards;
   opacity: 0.8;
+  will-change: transform;
+  transform: translateZ(0);
   filter: drop-shadow(0 0 3px rgba(255, 182, 193, 0.5));
+  /* Disable rotation on mobile for performance */
 }
 
 .sakura-petal svg {
   width: 100%;
   height: 100%;
-  animation: petalRotate 3s ease-in-out infinite;
+}
+
+@media (min-width: 769px) {
+  .sakura-petal svg {
+    animation: petalRotate 3s ease-in-out infinite;
+  }
 }
 
 @keyframes sakuraFall {
@@ -285,15 +311,33 @@ h1, h2, h3, h4 {
   }
 }
 
+/* Simplified fall for mobile */
+@keyframes sakuraFallMobile {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% {
+    transform: translateY(110vh) translateX(var(--drift));
+    opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .sakura-petal {
+    animation-name: sakuraFallMobile;
+  }
+}
+
 @keyframes petalRotate {
   0%, 100% { transform: rotate(0deg) scale(1); }
-  25% { transform: rotate(15deg) scale(1.05); }
-  50% { transform: rotate(-10deg) scale(0.95); }
-  75% { transform: rotate(20deg) scale(1.02); }
+  50% { transform: rotate(15deg) scale(1.05); }
 }
 
 /* ========================================
-   SPARKLE EFFECT
+   SPARKLE EFFECT - PERFORMANCE OPTIMIZED
 ======================================== */
 .sparkles-container {
   position: fixed;
@@ -304,6 +348,7 @@ h1, h2, h3, h4 {
   pointer-events: none;
   z-index: 99996;
   overflow: hidden;
+  contain: strict;
 }
 
 .sparkle {
@@ -311,6 +356,8 @@ h1, h2, h3, h4 {
   background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(212, 175, 55, 0.6) 50%, transparent 70%);
   border-radius: 50%;
   animation: sparkleEffect 0.8s ease-out forwards;
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 
 @keyframes sparkleEffect {
@@ -320,7 +367,7 @@ h1, h2, h3, h4 {
 }
 
 /* ========================================
-   COVER OVERLAY TRANSITION
+   COVER OVERLAY TRANSITION - OPTIMIZED
 ======================================== */
 .cover-overlay {
   position: fixed;
@@ -332,17 +379,31 @@ h1, h2, h3, h4 {
   z-index: 9999;
   animation: fadeIn 1s ease-out;
   overflow: hidden;
-  transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Hardware acceleration for transitions */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .cover-overlay.cover-transitioning {
   animation: coverTransitionOut 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  /* Use opacity only for better performance */
+  filter: blur(0);
 }
 
 .cover-overlay.cover-closed {
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
+}
+
+/* Simplified transition for mobile */
+@media (max-width: 768px) {
+  .cover-overlay.cover-transitioning {
+    animation-duration: 0.8s;
+  }
 }
 
 @keyframes coverTransitionOut {
@@ -535,15 +596,32 @@ h1, h2, h3, h4 {
 .section-subtitle { text-align: center; color: #666; font-size: 1.1rem; margin-bottom: 3rem; }
 
 /* ========================================
-   COUNTDOWN SECTION
+   COUNTDOWN SECTION - PERFORMANCE OPTIMIZED
 ======================================== */
 .countdown-section { padding: 3rem 1rem; text-align: center; position: relative; }
 .countdown-container { display: flex; justify-content: center; align-items: center; gap: 1rem; flex-wrap: wrap; max-width: 600px; margin: 0 auto; }
-.countdown-item { display: flex; flex-direction: column; align-items: center; padding: 1.5rem 2rem; background: linear-gradient(135deg, var(--color-rose-gold) 0%, var(--color-gold) 100%); border-radius: 15px; box-shadow: 0 10px 30px rgba(183, 110, 121, 0.3); min-width: 100px; animation: float 3s ease-in-out infinite; }
-.countdown-item:nth-child(1) { animation-delay: 0s; }
-.countdown-item:nth-child(3) { animation-delay: 0.2s; }
-.countdown-item:nth-child(5) { animation-delay: 0.4s; }
-.countdown-item:nth-child(7) { animation-delay: 0.6s; }
+.countdown-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, var(--color-rose-gold) 0%, var(--color-gold) 100%);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(183, 110, 121, 0.3);
+  min-width: 100px;
+  will-change: transform;
+  transform: translateZ(0);
+}
+/* Disable floating animation on mobile for performance */
+@media (min-width: 769px) {
+  .countdown-item {
+    animation: float 3s ease-in-out infinite;
+  }
+  .countdown-item:nth-child(1) { animation-delay: 0s; }
+  .countdown-item:nth-child(3) { animation-delay: 0.2s; }
+  .countdown-item:nth-child(5) { animation-delay: 0.4s; }
+  .countdown-item:nth-child(7) { animation-delay: 0.6s; }
+}
 .countdown-number { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 700; color: white; }
 .countdown-label { font-family: 'Montserrat', sans-serif; font-size: 0.9rem; color: rgba(255, 255, 255, 0.9); text-transform: uppercase; letter-spacing: 2px; }
 .countdown-separator { font-size: 2rem; color: var(--color-gold); font-weight: 700; }
@@ -952,3 +1030,185 @@ h1, h2, h3, h4 {
 }
 -ms-overflow-style: none;
 scrollbar-width: none;
+
+/* ========================================
+   MOBILE PERFORMANCE OPTIMIZATIONS
+======================================== */
+
+/* Reduce animations on mobile devices */
+@media (max-width: 768px) {
+  /* Disable complex background animations */
+  .aurora-bg::before,
+  .aurora-bg::after {
+    animation-duration: 40s !important;
+  }
+
+  .aurora-light {
+    animation-duration: 20s !important;
+    opacity: 0.5;
+  }
+
+  /* Disable aurora layers entirely on mobile */
+  .aurora-layer:nth-child(1),
+  .aurora-layer:nth-child(2),
+  .aurora-layer:nth-child(3) {
+    display: none;
+  }
+
+  /* Simplify cover animations */
+  .cover-ornament {
+    animation: pulse 4s infinite;
+  }
+
+  .cover-button {
+    animation: buttonAppear 1s ease-out 1.2s backwards;
+    /* Remove pulse animation on mobile */
+  }
+
+  /* Simplify hero ornaments */
+  .hero-ornament {
+    animation: pulse 4s infinite;
+  }
+
+  /* Simplify footer animations */
+  .footer-ornament {
+    animation: pulse 4s infinite;
+  }
+
+  .footer-hearts i {
+    animation: heartbeat 2s infinite;
+  }
+
+  /* Simplify couple heart */
+  .couple-heart {
+    animation: pulse 2s infinite;
+  }
+
+  /* Performance improvements for scroll reveals */
+  .scroll-reveal {
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  }
+
+  /* Reduce gallery hover effects on mobile */
+  .gallery-item {
+    transition: all 0.2s ease;
+  }
+
+  .gallery-item:hover {
+    transform: none;
+  }
+
+  .gallery-item:hover .gallery-image {
+    transform: none;
+  }
+
+  .gallery-item:hover .gallery-overlay {
+    opacity: 1;
+  }
+
+  /* Reduce card hover effects */
+  .couple-card:hover,
+  .event-card:hover,
+  .gift-card:hover {
+    transform: none;
+  }
+
+  /* Simplify wish card hover */
+  .wish-card:hover {
+    transform: none;
+  }
+
+  /* Hardware acceleration for smooth scrolling */
+  .main-app {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Even more aggressive optimizations for small screens */
+@media (max-width: 480px) {
+  /* Disable most decorative animations */
+  .cover-ornament,
+  .hero-ornament,
+  .footer-ornament,
+  .couple-heart {
+    animation: none;
+  }
+
+  .footer-hearts i {
+    animation: none;
+  }
+
+  /* Disable backdrop-filter on mobile for performance */
+  .couple-card,
+  .timeline-content,
+  .event-card,
+  .rsvp-form,
+  .wish-card,
+  .gift-card {
+    backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.8);
+  }
+
+  /* Reduce shadow effects on mobile */
+  .countdown-item {
+    box-shadow: 0 5px 15px rgba(183, 110, 121, 0.2);
+  }
+
+  .couple-card,
+  .event-card,
+  .rsvp-form,
+  .gift-card {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Simplify photo badges */
+  .photo-badge {
+    width: 30px;
+    height: 30px;
+    font-size: 0.75rem;
+  }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .aurora-bg::before,
+  .aurora-bg::after,
+  .aurora-light,
+  .aurora-layer,
+  .floating-heart,
+  .sakura-petal,
+  .sparkle,
+  .cover-ornament,
+  .hero-ornament,
+  .footer-ornament,
+  .footer-hearts i,
+  .couple-heart,
+  .countdown-item {
+    animation: none !important;
+  }
+
+  .scroll-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Print optimizations */
+@media print {
+  .aurora-bg,
+  .sakura-container,
+  .sparkles-container,
+  .floating-hearts-container,
+  .cover-overlay {
+    display: none;
+  }
+}

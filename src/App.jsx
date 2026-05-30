@@ -1,28 +1,53 @@
 import { useState, useEffect } from 'react';
 
+// Check if mobile device
+const isMobile = () => {
+  return typeof window !== 'undefined' && window.innerWidth <= 768;
+};
+
+// Hook to detect reduced motion preference
+const useReducedMotion = () => {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const handler = (event) => setPrefersReducedMotion(event.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
+
+  return prefersReducedMotion;
+};
+
 // Floating Hearts Effect
 const FloatingHearts = ({ trigger }) => {
+  const prefersReducedMotion = useReducedMotion();
   const [hearts, setHearts] = useState([]);
 
   useEffect(() => {
-    if (trigger) {
-      const newHearts = [];
-      for (let i = 0; i < 40; i++) {
-        newHearts.push({
-          id: i,
-          left: Math.random() * 100,
-          startDelay: Math.random() * 1,
-          duration: 2 + Math.random() * 3,
-          size: 15 + Math.random() * 25,
-          color: Math.random() > 0.5 ? '#B76E79' : '#D4AF37',
-          drift: Math.random() * 150 - 75,
-          rotation: Math.random() * 360,
-        });
-      }
-      setHearts(newHearts);
-      setTimeout(() => setHearts([]), 5000);
+    // Don't show floating hearts if reduced motion is preferred
+    if (!trigger || prefersReducedMotion) return;
+
+    const newHearts = [];
+    // Reduce particle count on mobile for better performance
+    const count = isMobile() ? 20 : 40;
+    for (let i = 0; i < count; i++) {
+      newHearts.push({
+        id: i,
+        left: Math.random() * 100,
+        startDelay: Math.random() * 1,
+        duration: 2 + Math.random() * 3,
+        size: 15 + Math.random() * 25,
+        color: Math.random() > 0.5 ? '#B76E79' : '#D4AF37',
+        drift: Math.random() * 150 - 75,
+        rotation: Math.random() * 360,
+      });
     }
-  }, [trigger]);
+    setHearts(newHearts);
+    setTimeout(() => setHearts([]), 5000);
+  }, [trigger, prefersReducedMotion]);
 
   if (!trigger || hearts.length === 0) return null;
 
@@ -51,9 +76,12 @@ const FloatingHearts = ({ trigger }) => {
 
 // Sakura Petal Component
 const SakuraPetals = () => {
+  const prefersReducedMotion = useReducedMotion();
   const [petals, setPetals] = useState([]);
 
   useEffect(() => {
+    if (prefersReducedMotion) return;
+
     const createPetal = () => {
       const petal = {
         id: Date.now() + Math.random(),
@@ -75,14 +103,19 @@ const SakuraPetals = () => {
       setTimeout(() => createPetal(), i * 2000);
     }
 
+    // Reduce petal generation on mobile
+    const intervalTime = isMobile() ? 6000 : 4000;
+
     const interval = setInterval(() => {
       if (Math.random() > 0.4) {
         createPetal();
       }
-    }, 4000);
+    }, intervalTime);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [prefersReducedMotion]);
+
+  if (prefersReducedMotion) return null;
 
   return (
     <div className="sakura-container">
@@ -116,25 +149,31 @@ const SakuraPetals = () => {
 
 // Sparkle Effect
 const Sparkles = ({ show }) => {
+  const prefersReducedMotion = useReducedMotion();
   const [sparkles, setSparkles] = useState([]);
 
   useEffect(() => {
-    if (show) {
-      const newSparkles = [];
-      for (let i = 0; i < 50; i++) {
-        newSparkles.push({
-          id: i,
-          left: Math.random() * 100,
-          top: Math.random() * 100,
-          delay: Math.random() * 1,
-          duration: 0.8 + Math.random() * 0.8,
-          size: 3 + Math.random() * 5,
-        });
-      }
-      setSparkles(newSparkles);
-      setTimeout(() => setSparkles([]), 2000);
+    // Don't show sparkles if reduced motion is preferred
+    if (!show || prefersReducedMotion) return;
+
+    const newSparkles = [];
+    // Reduce sparkle count on mobile for better performance
+    const count = isMobile() ? 25 : 50;
+    for (let i = 0; i < count; i++) {
+      newSparkles.push({
+        id: i,
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        delay: Math.random() * 1,
+        duration: 0.8 + Math.random() * 0.8,
+        size: 3 + Math.random() * 5,
+      });
     }
-  }, [show]);
+    setSparkles(newSparkles);
+    setTimeout(() => setSparkles([]), 2000);
+  }, [show, prefersReducedMotion]);
+
+  if (!show || sparkles.length === 0) return null;
 
   return (
     <div className="sparkles-container">
@@ -187,6 +226,7 @@ const TEMPLATE_PHOTOS = {
 };
 
 function App() {
+  const prefersReducedMotion = useReducedMotion();
   const [isOpened, setIsOpened] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showContent, setShowContent] = useState(false);
@@ -224,6 +264,14 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // If reduced motion is preferred, show all elements immediately
+    if (prefersReducedMotion) {
+      document.querySelectorAll('.scroll-reveal').forEach(el => {
+        el.classList.add('reveal-active');
+      });
+      return;
+    }
+
     const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
 
     const observer = new IntersectionObserver((entries) => {
@@ -241,7 +289,7 @@ function App() {
     });
 
     return () => observer.disconnect();
-  }, [showContent]);
+  }, [showContent, prefersReducedMotion]);
 
   const handleOpenInvitation = () => {
     setShowEffects(true);
