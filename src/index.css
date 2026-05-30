@@ -1,0 +1,1349 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-ivory: #FFFFF0;
+  --color-champagne: #F7E7CE;
+  --color-gold: #D4AF37;
+  --color-rose-gold: #B76E79;
+  --color-cream: #FFFDD0;
+  --color-warm-white: #FAF9F6;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: var(--color-warm-white);
+  color: #333;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+/* Main App Container */
+.main-app {
+  min-height: 100vh;
+  position: relative;
+}
+
+/* ========================================
+   AURORA BACKGROUND ANIMATION
+======================================== */
+.aurora-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+  background: linear-gradient(135deg, #FFF8F0 0%, #FDF0F2 50%, #FFF8EC 100%);
+}
+
+.aurora-bg::before,
+.aurora-bg::after,
+.aurora-bg .aurora-layer:nth-child(1),
+.aurora-bg .aurora-layer:nth-child(2),
+.aurora-bg .aurora-layer:nth-child(3) {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  animation: auroraMove 20s ease-in-out infinite;
+}
+
+.aurora-bg::before {
+  background: radial-gradient(ellipse at 20% 50%, rgba(247, 231, 206, 0.8) 0%, transparent 50%);
+  animation-duration: 25s;
+  animation-delay: 0s;
+}
+
+.aurora-bg::after {
+  background: radial-gradient(ellipse at 80% 30%, rgba(183, 110, 121, 0.3) 0%, transparent 50%);
+  animation-duration: 20s;
+  animation-delay: -5s;
+}
+
+.aurora-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.aurora-layer:nth-child(1) {
+  background: radial-gradient(ellipse at 30% 70%, rgba(212, 175, 55, 0.25) 0%, transparent 50%);
+  animation: auroraMove1 15s ease-in-out infinite;
+}
+
+.aurora-layer:nth-child(2) {
+  background: radial-gradient(ellipse at 70% 80%, rgba(183, 110, 121, 0.2) 0%, transparent 50%);
+  animation: auroraMove2 18s ease-in-out infinite;
+}
+
+.aurora-layer:nth-child(3) {
+  background: radial-gradient(ellipse at 50% 50%, rgba(255, 253, 240, 0.6) 0%, transparent 60%);
+  animation: auroraMove3 22s ease-in-out infinite;
+}
+
+@keyframes auroraMove {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(5%, 3%) rotate(5deg);
+  }
+  50% {
+    transform: translate(-3%, 5%) rotate(-3deg);
+  }
+  75% {
+    transform: translate(-5%, -3%) rotate(3deg);
+  }
+}
+
+@keyframes auroraMove1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.6;
+  }
+  33% {
+    transform: translate(10%, 5%) scale(1.1);
+    opacity: 0.8;
+  }
+  66% {
+    transform: translate(-5%, 10%) scale(0.95);
+    opacity: 0.5;
+  }
+}
+
+@keyframes auroraMove2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-8%, -5%) scale(1.15);
+    opacity: 0.7;
+  }
+}
+
+@keyframes auroraMove3 {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.4;
+  }
+  25% {
+    transform: translate(5%, -5%) rotate(10deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-5%, 5%) rotate(-5deg);
+    opacity: 0.5;
+  }
+  75% {
+    transform: translate(3%, 3%) rotate(5deg);
+    opacity: 0.7;
+  }
+}
+
+/* Additional Aurora Light Effects */
+.aurora-light {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: lightFloat 10s ease-in-out infinite;
+}
+
+.aurora-light-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(247, 231, 206, 0.6) 0%, transparent 70%);
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.aurora-light-2 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(183, 110, 121, 0.4) 0%, transparent 70%);
+  top: 30%;
+  right: 15%;
+  animation-delay: -3s;
+}
+
+.aurora-light-3 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.3) 0%, transparent 70%);
+  bottom: 20%;
+  left: 30%;
+  animation-delay: -6s;
+}
+
+.aurora-light-4 {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(255, 253, 240, 0.5) 0%, transparent 70%);
+  bottom: 40%;
+  right: 25%;
+  animation-delay: -9s;
+}
+
+@keyframes lightFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.5;
+  }
+  25% {
+    transform: translate(20px, -30px) scale(1.1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(-15px, 20px) scale(0.95);
+    opacity: 0.6;
+  }
+  75% {
+    transform: translate(25px, 15px) scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+/* ========================================
+   SCROLL REVEAL ANIMATION
+======================================== */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.scroll-reveal.reveal-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered animations for children */
+.scroll-reveal:nth-child(1) { transition-delay: 0s; }
+.scroll-reveal:nth-child(2) { transition-delay: 0.1s; }
+.scroll-reveal:nth-child(3) { transition-delay: 0.2s; }
+.scroll-reveal:nth-child(4) { transition-delay: 0.3s; }
+.scroll-reveal:nth-child(5) { transition-delay: 0.4s; }
+.scroll-reveal:nth-child(6) { transition-delay: 0.5s; }
+
+/* Different reveal directions */
+.scroll-reveal-left {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.scroll-reveal-left.reveal-active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-reveal-right {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.scroll-reveal-right.reveal-active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-reveal-scale {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.scroll-reveal-scale.reveal-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ========================================
+   COVER OVERLAY
+======================================== */
+.cover-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #FFF8F0 0%, #FDF0F2 50%, #FFF8EC 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 1s ease-out;
+  overflow: hidden;
+}
+
+.cover-content {
+  text-align: center;
+  padding: 2rem;
+  animation: slideUp 1s ease-out 0.3s both;
+  position: relative;
+  z-index: 2;
+}
+
+.cover-ornament {
+  font-size: 2rem;
+  color: var(--color-gold);
+  margin: 1rem 0;
+  animation: pulse 2s infinite;
+}
+
+.cover-invitation {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 4px;
+  color: #666;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.cover-names {
+  font-family: 'Dancing Script', cursive;
+  font-size: 3.5rem;
+  color: var(--color-rose-gold);
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cover-date {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.cover-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2.5rem;
+  background: linear-gradient(135deg, var(--color-rose-gold) 0%, var(--color-gold) 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(183, 110, 121, 0.4);
+}
+
+.cover-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 25px rgba(183, 110, 121, 0.5);
+}
+
+/* ========================================
+   NAVIGATION
+======================================== */
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  padding: 0.75rem 1rem;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.nav-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  color: #555;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.nav-link:hover {
+  color: var(--color-rose-gold);
+  background: rgba(183, 110, 121, 0.1);
+}
+
+/* ========================================
+   HERO SECTION
+======================================== */
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  padding-top: 60px;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 2rem;
+}
+
+.hero-ornament {
+  font-size: 3rem;
+  color: var(--color-gold);
+  margin: 1.5rem 0;
+  animation: pulse 2s infinite;
+}
+
+.hero-invitation {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 3px;
+  color: #666;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.hero-names {
+  font-family: 'Dancing Script', cursive;
+  font-size: 5rem;
+  color: var(--color-rose-gold);
+  margin-bottom: 1rem;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hero-date {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.hero-tagline {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.1rem;
+  color: #777;
+  margin-top: 2rem;
+}
+
+/* ========================================
+   SECTION STYLES
+======================================== */
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3rem;
+  color: var(--color-rose-gold);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: #666;
+  font-size: 1.1rem;
+  margin-bottom: 3rem;
+}
+
+/* ========================================
+   COUNTDOWN SECTION
+======================================== */
+.countdown-section {
+  padding: 3rem 1rem;
+  text-align: center;
+  position: relative;
+}
+
+.countdown-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.countdown-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, var(--color-rose-gold) 0%, var(--color-gold) 100%);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(183, 110, 121, 0.3);
+  min-width: 100px;
+  animation: float 3s ease-in-out infinite;
+}
+
+.countdown-item:nth-child(1) { animation-delay: 0s; }
+.countdown-item:nth-child(3) { animation-delay: 0.2s; }
+.countdown-item:nth-child(5) { animation-delay: 0.4s; }
+.countdown-item:nth-child(7) { animation-delay: 0.6s; }
+
+.countdown-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+}
+
+.countdown-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.countdown-separator {
+  font-size: 2rem;
+  color: var(--color-gold);
+  font-weight: 700;
+}
+
+/* ========================================
+   COUPLE SECTION
+======================================== */
+.couple-section {
+  padding: 4rem 1rem;
+  position: relative;
+}
+
+.couple-grid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.couple-card {
+  padding: 2.5rem;
+  text-align: center;
+  max-width: 320px;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.couple-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(183, 110, 121, 0.2);
+}
+
+.couple-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  color: white;
+}
+
+.couple-avatar.female {
+  background: linear-gradient(135deg, var(--color-rose-gold) 0%, #e8a0ab 100%);
+}
+
+.couple-avatar.male {
+  background: linear-gradient(135deg, var(--color-gold) 0%, #c9a227 100%);
+}
+
+.couple-name {
+  font-family: 'Dancing Script', cursive;
+  font-size: 2rem;
+  color: var(--color-rose-gold);
+  margin-bottom: 0.5rem;
+}
+
+.couple-role {
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 0.25rem;
+}
+
+.couple-parents {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.couple-social {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.social-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(183, 110, 121, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-rose-gold);
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.social-icon:hover {
+  background: var(--color-rose-gold);
+  color: white;
+  transform: scale(1.1);
+}
+
+.couple-heart {
+  font-size: 3rem;
+  color: var(--color-gold);
+  animation: heartbeat 1.5s infinite;
+}
+
+/* ========================================
+   TIMELINE SECTION
+======================================== */
+.timeline-section {
+  padding: 4rem 1rem;
+  position: relative;
+}
+
+.timeline {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--color-gold), var(--color-rose-gold));
+  transform: translateX(-50%);
+}
+
+.timeline-item {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: calc(50% + 40px);
+  position: relative;
+  margin-bottom: 3rem;
+}
+
+.timeline-item:nth-child(even) {
+  justify-content: flex-start;
+  padding-right: 0;
+  padding-left: calc(50% + 40px);
+}
+
+.timeline-marker {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-rose-gold) 100%);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+  z-index: 1;
+}
+
+.timeline-content {
+  padding: 1.5rem;
+  max-width: 350px;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+}
+
+.timeline-year {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  color: var(--color-gold);
+  font-weight: 600;
+}
+
+.timeline-content h4 {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.5rem;
+  color: var(--color-rose-gold);
+  margin: 0.5rem 0;
+}
+
+.timeline-content p {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+/* ========================================
+   EVENTS SECTION
+======================================== */
+.events-section {
+  padding: 4rem 1rem;
+  position: relative;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.event-card {
+  padding: 2.5rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(183, 110, 121, 0.2);
+}
+
+.event-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-rose-gold) 100%);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2rem;
+  color: white;
+}
+
+.event-card h3 {
+  font-family: 'Dancing Script', cursive;
+  font-size: 2rem;
+  color: var(--color-rose-gold);
+  margin-bottom: 1rem;
+}
+
+.event-date {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  color: var(--color-gold);
+  font-weight: 600;
+}
+
+.event-time {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.event-location {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.event-location i {
+  color: var(--color-rose-gold);
+  margin-right: 0.5rem;
+}
+
+/* ========================================
+   GALLERY SECTION
+======================================== */
+.gallery-section {
+  padding: 4rem 1rem;
+  position: relative;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.gallery-item {
+  aspect-ratio: 1;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.gallery-item.large {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.gallery-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.gallery-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(183, 110, 121, 0.2) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-rose-gold);
+  font-size: 2rem;
+}
+
+.gallery-placeholder span {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  color: #666;
+}
+
+/* ========================================
+   RSVP SECTION
+======================================== */
+.rsvp-section {
+  padding: 4rem 1rem;
+  position: relative;
+}
+
+.rsvp-container {
+  max-width: 600px;
+  margin: 0 auto 4rem;
+}
+
+.rsvp-form {
+  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+  font-family: 'Dancing Script', cursive;
+  font-size: 2rem;
+  color: var(--color-rose-gold);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid rgba(212, 175, 55, 0.3);
+  border-radius: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, var(--color-rose-gold) 0%, var(--color-gold) 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.submit-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(183, 110, 121, 0.4);
+}
+
+/* Wishes List */
+.wishes-list {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.wishes-title {
+  font-family: 'Dancing Script', cursive;
+  font-size: 2rem;
+  color: var(--color-rose-gold);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.wish-card {
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+.wish-card:hover {
+  transform: translateX(10px);
+  box-shadow: 0 10px 30px rgba(183, 110, 121, 0.15);
+}
+
+.wish-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.wish-avatar {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-rose-gold) 100%);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.wish-info {
+  flex: 1;
+}
+
+.wish-info h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.wish-date {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.wish-attendance {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.attendance-hadir {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+}
+
+.attendance-tidak-hadir {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+}
+
+.attendance-masih-ragu {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+}
+
+.wish-message {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* ========================================
+   GIFT SECTION
+======================================== */
+.gift-section {
+  padding: 4rem 1rem;
+  position: relative;
+}
+
+.gifts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.gift-card {
+  padding: 2rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.gift-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(212, 175, 55, 0.2);
+}
+
+.gift-icon {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, var(--color-gold) 0%, #c9a227 100%);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 1.5rem;
+  font-size: 1.8rem;
+  color: white;
+}
+
+.gift-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  color: var(--color-gold);
+  margin-bottom: 1rem;
+}
+
+.gift-number {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+  letter-spacing: 2px;
+}
+
+.gift-holder {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.copy-button {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: 2px solid var(--color-gold);
+  color: var(--color-gold);
+  border-radius: 25px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.copy-button:hover {
+  background: var(--color-gold);
+  color: white;
+}
+
+/* ========================================
+   FOOTER
+======================================== */
+.footer {
+  background: linear-gradient(135deg, var(--color-rose-gold) 0%, var(--color-gold) 100%);
+  color: white;
+  text-align: center;
+  padding: 3rem 1rem;
+  position: relative;
+}
+
+.footer-ornament {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  animation: pulse 2s infinite;
+}
+
+.footer-names {
+  font-family: 'Dancing Script', cursive;
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.footer-date {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.footer-message {
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.footer-hearts {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.footer-hearts i {
+  animation: heartbeat 1.5s infinite;
+}
+
+.footer-hearts i:nth-child(1) { animation-delay: 0s; }
+.footer-hearts i:nth-child(2) { animation-delay: 0.2s; }
+.footer-hearts i:nth-child(3) { animation-delay: 0.4s; }
+
+.footer-copyright {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.footer-copyright i {
+  color: #ff6b6b;
+}
+
+/* ========================================
+   ANIMATIONS
+======================================== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  10%, 30% { transform: scale(1.1); }
+  20%, 40% { transform: scale(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+@media (max-width: 768px) {
+  .cover-names {
+    font-size: 2.5rem;
+  }
+
+  .hero-names {
+    font-size: 3rem;
+  }
+
+  .hero-ornament {
+    font-size: 2rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .countdown-item {
+    padding: 1rem 1.5rem;
+    min-width: 80px;
+  }
+
+  .countdown-number {
+    font-size: 2rem;
+  }
+
+  .couple-grid {
+    flex-direction: column;
+  }
+
+  .couple-heart {
+    transform: rotate(90deg);
+  }
+
+  .timeline::before {
+    left: 25px;
+  }
+
+  .timeline-item,
+  .timeline-item:nth-child(even) {
+    padding-left: 60px;
+    padding-right: 0;
+    justify-content: flex-start;
+  }
+
+  .timeline-marker {
+    left: 25px;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gallery-item.large {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+
+  .nav-link {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cover-names {
+    font-size: 2rem;
+  }
+
+  .hero-names {
+    font-size: 2.5rem;
+  }
+
+  .countdown-separator {
+    display: none;
+  }
+
+  .countdown-container {
+    gap: 0.5rem;
+  }
+
+  .countdown-item {
+    min-width: 70px;
+    padding: 0.75rem 1rem;
+  }
+
+  .countdown-number {
+    font-size: 1.5rem;
+  }
+
+  .countdown-label {
+    font-size: 0.7rem;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-ivory);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--color-gold), var(--color-rose-gold));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-rose-gold);
+}
