@@ -8,100 +8,99 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 const distDir = path.join(rootDir, 'dist');
 
-// Short paths to avoid ENAMETOOLONG
 const tempDir = 'C:\\deploy';
-const repoDir = 'C:\\deploy\\repo';
-const gitDir = 'C:\\deploy\\repo\\.git';
-const workDir = 'C:\\deploy\\src';
 
 async function deploy() {
-  console.log('🚀 Building project...');
+  // Clean up temp folder
+  console.log('🧹 Cleaning...');
+  try {
+    execSync(`if exist "${tempDir}" rmdir /s /q "${tempDir}"`, { stdio: 'pipe' });
+  } catch {}
 
   // Run build
+  console.log('🚀 Building project...');
   execSync('npm run build', { cwd: rootDir, stdio: 'inherit' });
 
-  // Clean up temp folders
-  console.log('🧹 Cleaning temp folders...');
-  const dirsToClean = ['C:\\deploy'];
-  for (const dir of dirsToClean) {
-    if (fs.existsSync(dir)) {
-      execSync(`rmdir /s /q "${dir}"`, { stdio: 'ignore' });
-    }
+  // Check dist folder
+  if (!fs.existsSync(distDir)) {
+    console.error('❌ dist folder not found!');
+    process.exit(1);
   }
 
-  // Create fresh directories
-  console.log('📁 Preparing deploy folder...');
-  fs.mkdirSync(repoDir, { recursive: true });
-  fs.mkdirSync(workDir, { recursive: true });
+  const files = fs.readdirSync(distDir);
+  console.log('📁 dist contents:', files);
 
-  // Copy dist contents to work dir
+  if (files.length === 0) {
+    console.error('❌ dist folder is empty!');
+    process.exit(1);
+  }
+
+  // Create temp folder
+  console.log('📁 Creating temp folder...');
+  fs.mkdirSync(tempDir, { recursive: true });
+
+  // Copy using xcopy for reliability
   console.log('📋 Copying files...');
-  copyDir(distDir, workDir);
+  execSync(`xcopy /e /i /y "${distDir}\\*" "${tempDir}"`, { stdio: 'inherit' });
 
-  // Initialize git in temp folder
-  console.log('🔧 Initializing git...');
-  process.chdir(repoDir);
-  execSync('git init -b main', { stdio: 'inherit' });
-  execSync(`git remote add origin https://github.com/Bakjah/undangan-teteh.git`, { stdio: 'inherit' });
+  // Verify copy
+  const tempFiles = fs.readdirSync(tempDir);
+  console.log('📁 temp contents:', tempFiles);
 
-  // Add files and commit
-  console.log('📝 Creating commit...');
-  execSync('git add .', { stdio: 'inherit' });
-  execSync('git commit -m "Deploy - ' + new Date().toISOString() + '"', { stdio: 'inherit' });
-
-  // Fetch and handle gh-pages branch
-  console.log('🌐 Syncing with GitHub...');
-  try {
-    execSync('git fetch origin gh-pages', { stdio: 'inherit' });
-    execSync('git checkout gh-pages', { stdio: 'inherit' });
-    execSync('git rm -rf . 2>nul || true', { stdio: 'inherit' });
-
-    // Copy files again to gh-pages branch
-    copyDir(distDir, repoDir);
-    execSync('git add .', { stdio: 'inherit' });
-    execSync('git commit -m "Deploy - ' + new Date().toISOString() + '"', { stdio: 'inherit' });
-  } catch {
-    console.log('📄 Creating new gh-pages branch...');
-    execSync('git checkout --orphan gh-pages', { stdio: 'inherit' });
-    execSync('git rm -rf . 2>nul || true', { stdio: 'inherit' });
-
-    // Copy files again
-    copyDir(distDir, repoDir);
-    execSync('git add .', { stdio: 'inherit' });
-    execSync('git commit -m "Deploy - ' + new Date().toISOString() + '"', { stdio: 'inherit' });
+  if (tempFiles.length === 0) {
+    console.error('❌ Copy failed!');
+    process.exit(1);
   }
+
+  // Initialize git
+  console.log('🔧 Initializing git...');
+  process.chdir(tempDir);
+  execSync('git init', { stdio: 'inherit' });
+  execSync('git config user.name "Deploy Bot"', { stdio: 'inherit' });
+  execSync('git config user.email "deploy@bot.local"', { stdio: 'inherit' });
+  execSync('git remote add origin https://github.com/Bakjah/undangan-teteh.git', { stdio: 'inherit' });
+
+  // Create .nojekyll to prevent Jekyll processing
+  fs.writeFileSync(path.join(tempDir, '.nojekyll'), '');
+
+  // Add all files
+  console.log('📝 Adding files...');
+  execSync('git add -A', { stdio: 'inherit' });
+
+  // Check staged files
+  const status = execSync('git status --porcelain', { encoding: 'utf8' });
+  console.log('📋 Git status:', status);
+
+  if (!status.trim()) {
+    console.error('❌ No files to commit!');
+    process.exit(1);
+  }
+
+  // Commit
+  console.log('💾 Committing...');
+  execSync('git commit -m "Deploy"', { stdio: 'inherit' });
 
   // Push to gh-pages
   console.log('🚀 Pushing to GitHub Pages...');
-  execSync('git push origin gh-pages --force', { stdio: 'inherit' });
+  try {
+    execSync('git push origin main:gh-pages --force', { stdio: 'inherit' });
+  } catch {
+    // If gh-pages doesn't exist, create it
+    console.log('📄 Creating new gh-pages branch...');
+    execSync('git branch gh-pages', { stdio: 'inherit' });
+    execSync('git push origin gh-pages --force', { stdio: 'inherit' });
+  }
 
   console.log('✅ Deploy complete!');
-  console.log('🌐 Check your site at: https://Bakjah.github.io/undangan-teteh');
+  console.log('🌐 Check: https://Bakjah.github.io/undangan-teteh');
 
   // Cleanup
   process.chdir(rootDir);
-  execSync(`rmdir /s /q "C:\\deploy"`, { stdio: 'ignore' });
-}
+  execSync(`if exist "${tempDir}" rmdir /s /q "${tempDir}"`, { stdio: 'ignore' });
 
-function copyDir(src, dest) {
-  if (!fs.existsSync(src)) return;
-
-  const entries = fs.readdirSync(src, { withFileTypes: true });
-
-  for (const entry of entries) {
-    const srcPath = path.join(src, entry.name);
-    const destPath = path.join(dest, entry.name);
-
-    if (entry.isDirectory()) {
-      fs.mkdirSync(destPath, { recursive: true });
-      copyDir(srcPath, destPath);
-    } else {
-      fs.copyFileSync(srcPath, destPath);
-    }
-  }
-}
-
-deploy().catch(err => {
-  console.error('❌ Deploy failed:', err);
+} catch (err) {
+  console.error('❌ Deploy failed:', err.message);
   process.exit(1);
-});
+}
+
+deploy();
