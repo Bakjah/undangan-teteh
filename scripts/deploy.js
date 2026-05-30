@@ -1,4 +1,3 @@
-import ghpages from 'gh-pages';
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
@@ -9,67 +8,100 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 const distDir = path.join(rootDir, 'dist');
 
-// Use short path to avoid ENAMETOOLONG
-const tempDir = 'C:\\.undangan-deploy';
+// Short paths to avoid ENAMETOOLONG
+const tempDir = 'C:\\deploy';
+const repoDir = 'C:\\deploy\\repo';
+const gitDir = 'C:\\deploy\\repo\\.git';
+const workDir = 'C:\\deploy\\src';
 
 async function deploy() {
-  // Clean gh-pages cache first to avoid URL mismatch errors
-  const cacheDir = path.join(rootDir, 'node_modules', '.cache', 'gh-pages');
-  if (fs.existsSync(cacheDir)) {
-    console.log('🧹 Cleaning gh-pages cache...');
-    fs.rmSync(cacheDir, { recursive: true, force: true });
-  }
-
   console.log('🚀 Building project...');
 
   // Run build
   execSync('npm run build', { cwd: rootDir, stdio: 'inherit' });
 
-  // Clean and create temp folder
-  if (fs.existsSync(tempDir)) {
-    fs.rmSync(tempDir, { recursive: true, force: true });
-  }
-
-  // Copy dist to temp folder (short path)
-  console.log('📁 Preparing publish folder...');
-  fs.mkdirSync(tempDir, { recursive: true });
-
-  function copyDir(src, dest) {
-    if (!fs.existsSync(src)) return;
-
-    const entries = fs.readdirSync(src, { withFileTypes: true });
-
-    for (const entry of entries) {
-      const srcPath = path.join(src, entry.name);
-      const destPath = path.join(dest, entry.name);
-
-      if (entry.isDirectory()) {
-        fs.mkdirSync(destPath, { recursive: true });
-        copyDir(srcPath, destPath);
-      } else {
-        fs.copyFileSync(srcPath, destPath);
-      }
+  // Clean up temp folders
+  console.log('🧹 Cleaning temp folders...');
+  const dirsToClean = ['C:\\deploy'];
+  for (const dir of dirsToClean) {
+    if (fs.existsSync(dir)) {
+      execSync(`rmdir /s /q "${dir}"`, { stdio: 'ignore' });
     }
   }
 
-  copyDir(distDir, tempDir);
+  // Create fresh directories
+  console.log('📁 Preparing deploy folder...');
+  fs.mkdirSync(repoDir, { recursive: true });
+  fs.mkdirSync(workDir, { recursive: true });
 
-  console.log('🚀 Deploying to GitHub Pages...');
+  // Copy dist contents to work dir
+  console.log('📋 Copying files...');
+  copyDir(distDir, workDir);
 
-  ghpages.publish(tempDir, {
-    branch: 'gh-pages',
-    repo: 'https://github.com/bakjah/undangan-teteh.git',
-    dotfiles: true
-  }, (err) => {
-    if (err) {
-      console.error('❌ Deploy failed:', err);
-      process.exit(1);
-    }
-    console.log('✅ Deploy complete!');
+  // Initialize git in temp folder
+  console.log('🔧 Initializing git...');
+  process.chdir(repoDir);
+  execSync('git init -b main', { stdio: 'inherit' });
+  execSync(`git remote add origin https://github.com/Bakjah/undangan-teteh.git`, { stdio: 'inherit' });
 
-    // Clean up temp folder
-    fs.rmSync(tempDir, { recursive: true, force: true });
-  });
+  // Add files and commit
+  console.log('📝 Creating commit...');
+  execSync('git add .', { stdio: 'inherit' });
+  execSync('git commit -m "Deploy - ' + new Date().toISOString() + '"', { stdio: 'inherit' });
+
+  // Fetch and handle gh-pages branch
+  console.log('🌐 Syncing with GitHub...');
+  try {
+    execSync('git fetch origin gh-pages', { stdio: 'inherit' });
+    execSync('git checkout gh-pages', { stdio: 'inherit' });
+    execSync('git rm -rf . 2>nul || true', { stdio: 'inherit' });
+
+    // Copy files again to gh-pages branch
+    copyDir(distDir, repoDir);
+    execSync('git add .', { stdio: 'inherit' });
+    execSync('git commit -m "Deploy - ' + new Date().toISOString() + '"', { stdio: 'inherit' });
+  } catch {
+    console.log('📄 Creating new gh-pages branch...');
+    execSync('git checkout --orphan gh-pages', { stdio: 'inherit' });
+    execSync('git rm -rf . 2>nul || true', { stdio: 'inherit' });
+
+    // Copy files again
+    copyDir(distDir, repoDir);
+    execSync('git add .', { stdio: 'inherit' });
+    execSync('git commit -m "Deploy - ' + new Date().toISOString() + '"', { stdio: 'inherit' });
+  }
+
+  // Push to gh-pages
+  console.log('🚀 Pushing to GitHub Pages...');
+  execSync('git push origin gh-pages --force', { stdio: 'inherit' });
+
+  console.log('✅ Deploy complete!');
+  console.log('🌐 Check your site at: https://Bakjah.github.io/undangan-teteh');
+
+  // Cleanup
+  process.chdir(rootDir);
+  execSync(`rmdir /s /q "C:\\deploy"`, { stdio: 'ignore' });
 }
 
-deploy();
+function copyDir(src, dest) {
+  if (!fs.existsSync(src)) return;
+
+  const entries = fs.readdirSync(src, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const srcPath = path.join(src, entry.name);
+    const destPath = path.join(dest, entry.name);
+
+    if (entry.isDirectory()) {
+      fs.mkdirSync(destPath, { recursive: true });
+      copyDir(srcPath, destPath);
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
+deploy().catch(err => {
+  console.error('❌ Deploy failed:', err);
+  process.exit(1);
+});
