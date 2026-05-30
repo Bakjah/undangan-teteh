@@ -946,7 +946,9 @@ h1, h2, h3, h4 {
   .countdown-label { font-size: 0.7rem; }
 }
 
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--color-ivory); }
-::-webkit-scrollbar-thumb { background: linear-gradient(var(--color-gold), var(--color-rose-gold)); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-rose-gold); }
+/* Hide Scrollbar */
+::-webkit-scrollbar {
+  display: none;
+}
+-ms-overflow-style: none;
+scrollbar-width: none;
